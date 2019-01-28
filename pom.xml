@@ -72,7 +72,7 @@
     </profiles>
 
     <properties>
-        <docker-maven-plugin.version>1.2.0.Z</docker-maven-plugin.version>
+        <docker-maven-plugin.version>1.2.1.Z</docker-maven-plugin.version>
 
         <docker.push.serverId>docker</docker.push.serverId>
         <docker.repo.domain>localhost:8082</docker.repo.domain>
