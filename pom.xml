@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>docker-builder-spring</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packaging>pom</packaging>
 
     <name>docker-builder-spring</name>
@@ -76,7 +76,7 @@
 
         <docker.push.serverId>docker</docker.push.serverId>
         <docker.repo.domain>localhost:8082</docker.repo.domain>
-        <docker.baseImg>dmnotdm/oracle-jdk8:0.0.1</docker.baseImg>
+        <docker.baseImg>dmnotdm/oracle-jre8:0.0.1</docker.baseImg>
     </properties>
 
 </project>
