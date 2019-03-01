@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.zzz</groupId>
         <artifactId>spring-builder</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.3</version>
     </parent>
 
     <artifactId>docker-builder-spring</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>pom</packaging>
 
     <name>docker-builder-spring</name>
@@ -18,54 +18,49 @@
 
     <build>
         <pluginManagement>
-            <!-- @formatter:off -->
             <plugins>
-                <plugin><groupId>com.spotify</groupId><artifactId>docker-maven-plugin</artifactId><version>${docker-maven-plugin.version}</version></plugin>
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <configuration>
+                        <imageName>${docker.repo.domain}/${project.groupId}.${project.artifactId}:${project.version}</imageName>
+                        <baseImage>${docker.baseImg}</baseImage>
+                        <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+                        <resources>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}</directory>
+                                <include>${project.build.finalName}.jar</include>
+                            </resource>
+                        </resources>
+                        <serverId>${docker.push.serverId}</serverId>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>remove-image</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>removeImage</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>build-image</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>push-image</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>push</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
-            <!-- @formatter:on -->
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <configuration>
-                    <imageName>${docker.repo.domain}/${project.groupId}.${project.artifactId}:${project.version}</imageName>
-                    <baseImage>${docker.baseImg}</baseImage>
-                    <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
-                    <serverId>${docker.push.serverId}</serverId>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>remove-image</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>removeImage</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>build-image</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>push-image</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 
     <profiles>
