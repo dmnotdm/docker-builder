@@ -54,8 +54,22 @@
                                         <image.project.artifactId>${project.artifactId}</image.project.artifactId>
                                         <image.project.version>${project.version}</image.project.version>
                                     </labels>
+                                    <assembly>
+                                        <basedir>/maven</basedir>
+                                        <inline>
+                                            <files>
+                                                <file>
+                                                    <source>${project.basedir}/target/${project.artifactId}-${project.version}.jar</source>
+                                                </file>
+                                            </files>
+                                        </inline>
+                                    </assembly>
                                     <entryPoint>
-                                        <shell>java -jar maven/${project.name}-${project.version}.jar</shell>
+                                        <exec>
+                                            <arg>java</arg>
+                                            <arg>-jar</arg>
+                                            <arg>maven/${project.name}-${project.version}.jar</arg>
+                                        </exec>
                                     </entryPoint>
                                 </build>
                             </image>
