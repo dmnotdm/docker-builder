@@ -15,7 +15,11 @@
     <packaging>pom</packaging>
 
     <properties>
+        <fabric8.docker-maven-plugin.version>0.28.0</fabric8.docker-maven-plugin.version>
 
+        <docker.push.serverId>docker</docker.push.serverId>
+        <docker.repo.domain>localhost:8082</docker.repo.domain>
+        <docker.baseImg>dmnotdm/oracle-jre8:0.0.1</docker.baseImg>
     </properties>
 
     <build>
@@ -24,25 +28,32 @@
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.28.0</version>
+                    <version>${fabric8.docker-maven-plugin.version}</version>
                     <configuration>
-                        <useColor>true</useColor>
                         <images>
                             <image>
-                                <name>${project.name}:${project.version}</name>
+                                <name>${docker.repo.domain}/${project.groupId}.${project.artifactId}:${project.version}</name>
                                 <build>
-                                    <from>dmnotdm/oracle-jre8:0.0.1</from>
+                                    <from>${docker.baseImg}</from>
                                     <args>
                                         <JAR_FILE>${project.name}-${project.version}.jar</JAR_FILE>
+                                        <git.build.time>${git.build.time}</git.build.time>
+                                        <git.commit.id>${git.commit.id}</git.commit.id>
+                                        <git.commit.message.full>${git.commit.message.full}</git.commit.message.full>
+                                        <git.build.user.name>${git.build.user.name}</git.build.user.name>
+                                        <image.project.groupId>${project.groupId}</image.project.groupId>
+                                        <image.project.artifactId>${project.artifactId}</image.project.artifactId>
+                                        <image.project.version>${project.version}</image.project.version>
                                     </args>
                                     <labels>
-                                        <com.example.label-with-value>foo</com.example.label-with-value>
-                                        <version>${project.version}</version>
-                                        <artifactId>${project.artifactId}</artifactId>
+                                        <git.build.time>${git.build.time}</git.build.time>
+                                        <git.commit.id>${git.commit.id}</git.commit.id>
+                                        <git.commit.message.full>${git.commit.message.full}</git.commit.message.full>
+                                        <git.build.user.name>${git.build.user.name}</git.build.user.name>
+                                        <image.project.groupId>${project.groupId}</image.project.groupId>
+                                        <image.project.artifactId>${project.artifactId}</image.project.artifactId>
+                                        <image.project.version>${project.version}</image.project.version>
                                     </labels>
-                                    <assembly>
-                                        <descriptorRef>artifact</descriptorRef>
-                                    </assembly>
                                     <entryPoint>
                                         <shell>java -jar maven/${project.name}-${project.version}.jar</shell>
                                     </entryPoint>
