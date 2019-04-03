@@ -7,24 +7,86 @@
         <groupId>com.zzz</groupId>
         <artifactId>maven-builder</artifactId>
         <version>0.0.3</version>
-        <relativePath/>
     </parent>
 
     <artifactId>docker-builder</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>pom</packaging>
 
     <properties>
+        <fabric8.docker-maven-plugin.version>0.28.0</fabric8.docker-maven-plugin.version>
         <docker-maven-plugin.version>1.2.0</docker-maven-plugin.version>
 
         <docker.push.serverId>docker</docker.push.serverId>
         <docker.repo.domain>localhost:8082</docker.repo.domain>
         <docker.baseImg>dmnotdm/oracle-jre8:0.0.1</docker.baseImg>
+
+        <spring-dependency.version>0.0.2</spring-dependency.version>
     </properties>
 
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${fabric8.docker-maven-plugin.version}</version>
+                    <configuration>
+                        <images>
+                            <image>
+                                <name>${docker.repo.domain}/${project.groupId}.${project.artifactId}:${project.version}</name>
+                                <build>
+                                    <from>${docker.baseImg}</from>
+                                    <args>
+                                        <JAR_FILE>${project.name}-${project.version}.jar</JAR_FILE>
+                                        <git.build.time>${git.build.time}</git.build.time>
+                                        <git.commit.id>${git.commit.id}</git.commit.id>
+                                        <git.commit.message.full>${git.commit.message.full}</git.commit.message.full>
+                                        <git.build.user.name>${git.build.user.name}</git.build.user.name>
+                                        <image.project.groupId>${project.groupId}</image.project.groupId>
+                                        <image.project.artifactId>${project.artifactId}</image.project.artifactId>
+                                        <image.project.version>${project.version}</image.project.version>
+                                    </args>
+                                    <labels>
+                                        <git.build.time>${git.build.time}</git.build.time>
+                                        <git.commit.id>${git.commit.id}</git.commit.id>
+                                        <git.commit.message.full>${git.commit.message.full}</git.commit.message.full>
+                                        <git.build.user.name>${git.build.user.name}</git.build.user.name>
+                                        <image.project.groupId>${project.groupId}</image.project.groupId>
+                                        <image.project.artifactId>${project.artifactId}</image.project.artifactId>
+                                        <image.project.version>${project.version}</image.project.version>
+                                    </labels>
+                                    <assembly>
+                                        <basedir>/maven</basedir>
+                                        <inline>
+                                            <files>
+                                                <file>
+                                                    <source>${project.basedir}/target/${project.artifactId}-${project.version}.jar</source>
+                                                </file>
+                                            </files>
+                                        </inline>
+                                    </assembly>
+                                    <entryPoint>
+                                        <exec>
+                                            <arg>java</arg>
+                                            <arg>-jar</arg>
+                                            <arg>maven/${project.name}-${project.version}.jar</arg>
+                                        </exec>
+                                    </entryPoint>
+                                </build>
+                            </image>
+                        </images>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>build-image</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
@@ -51,13 +113,6 @@
                             </goals>
                         </execution>
                         <execution>
-                            <id>build-image</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>build</goal>
-                            </goals>
-                        </execution>
-                        <execution>
                             <id>push-image</id>
                             <phase>deploy</phase>
                             <goals>
@@ -70,7 +125,22 @@
         </pluginManagement>
     </build>
 
-    <modules>
-        <module>docker-builder-spring</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>spring-dependency</id>
+            <activation><property><name>!profile.exclude.spring-dependency</name></property></activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.zzz</groupId>
+                        <artifactId>spring-dependency</artifactId>
+                        <version>${spring-dependency.version}</version>
+                        <scope>import</scope>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+    </profiles>
+
 </project>
