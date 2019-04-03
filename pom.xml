@@ -21,7 +21,7 @@
         <docker.repo.domain>localhost:8082</docker.repo.domain>
         <docker.baseImg>dmnotdm/oracle-jre8:0.0.1</docker.baseImg>
 
-        <spring-dependency.version>0.0.2-SNAPSHOT</spring-dependency.version>
+        <spring-dependency.version>0.0.2</spring-dependency.version>
     </properties>
 
     <build>
