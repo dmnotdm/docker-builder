@@ -18,8 +18,11 @@
         <docker-maven-plugin.version>1.2.0</docker-maven-plugin.version>
 
         <docker.push.serverId>docker</docker.push.serverId>
-        <docker.repo.domain>localhost:8082</docker.repo.domain>
         <docker.baseImg>dmnotdm/oracle-jre8:0.0.1</docker.baseImg>
+        <docker.repo.domain>localhost:8082</docker.repo.domain>
+        <docker.img.groupId>${project.groupId}</docker.img.groupId>
+        <docker.img.artifactId>${project.artifactId}</docker.img.artifactId>
+        <docker.img.version>${project.version}</docker.img.version>
 
         <spring-dependency.version>0.0.2</spring-dependency.version>
     </properties>
@@ -34,7 +37,7 @@
                     <configuration>
                         <images>
                             <image>
-                                <name>${docker.repo.domain}/${project.groupId}.${project.artifactId}:${project.version}</name>
+                                <name>${docker.repo.domain}/${docker.img.groupId}.${docker.img.artifactId}:${docker.img.version}</name>
                                 <build>
                                     <from>${docker.baseImg}</from>
                                     <args>
